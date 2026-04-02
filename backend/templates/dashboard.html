@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | NexusOil{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total Wells</div>
+    <div class="stat-value">{{ well_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Productions</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#10b981,#06b6d4);-webkit-background-clip:text;background-clip:text">{{ production_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Ogequipments</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#f59e0b,#f97316);-webkit-background-clip:text;background-clip:text">{{ ogequipment_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Depth M</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#ef4444,#ec4899);-webkit-background-clip:text;background-clip:text">{{ well_total_depth_m|floatformat:0 }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+    <h3>Recent Wells</h3>
+    <a href="/wells/create/" class="btn btn-primary btn-sm">+ New Well</a>
+  </div>
+  {% if recent %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Well Id</th><th>Location</th><th>Well Type</th><th>Depth M</th><th>Created</th></tr>
+    </thead>
+    <tbody>
+      {% for r in recent %}
+      <tr>
+        <td><a href="/wells/{{ r.pk }}/edit/">{{ r.name }}</a></td>
+        <td>{{ r.well_id|default:"-" }}</td><td>{{ r.location|default:"-" }}</td><td><span class="badge badge-blue">{{ r.get_well_type_display }}</span></td><td>{{ r.depth_m|floatformat:2 }}</td><td style="color:var(--muted)">{{ r.created_at|date:"M d, Y" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No records yet.</p>
+    <a href="/wells/create/" class="btn btn-primary" style="margin-top:1rem">Create First Well</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Productions | NexusOil{% endblock %}
+{% block page_title %}Productions{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search productions...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Status</option>
+      <option value="normal" {% if status_filter == 'normal' %}selected{% endif %}>Normal</option>
+      <option value="low" {% if status_filter == 'low' %}selected{% endif %}>Low</option>
+      <option value="shutdown" {% if status_filter == 'shutdown' %}selected{% endif %}>Shutdown</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/productions/create/" class="btn btn-primary">+ New Production</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Well Name</th><th>Date</th><th>Oil Bbl</th><th>Gas Mcf</th><th>Water Bbl</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/productions/{{ r.pk }}/edit/"><strong>{{ r.well_name }}</strong></a></td>
+        <td style="color:var(--muted)">{{ r.date|date:"M d, Y"|default:"-" }}</td>
+        <td>{{ r.oil_bbl|floatformat:2 }}</td>
+        <td>{{ r.gas_mcf|floatformat:2 }}</td>
+        <td>{{ r.water_bbl|floatformat:2 }}</td>
+        <td class="actions">
+          <a href="/productions/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/productions/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No productions found.</p>
+    <a href="/productions/create/" class="btn btn-primary" style="margin-top:1rem">Create Production</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

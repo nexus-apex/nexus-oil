@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} Production | NexusOil{% endblock %}
+{% block page_title %}{% if editing %}Edit Production{% else %}New Production{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Well Name</label>
+        <input type="text" name="well_name" value="{{ record.well_name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" name="date" value="{{ record.date|date:'Y-m-d'|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Oil Bbl</label>
+        <input type="number" step="0.01" name="oil_bbl" value="{{ record.oil_bbl|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Gas Mcf</label>
+        <input type="number" step="0.01" name="gas_mcf" value="{{ record.gas_mcf|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Water Bbl</label>
+        <input type="number" step="0.01" name="water_bbl" value="{{ record.water_bbl|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Uptime Hours</label>
+        <input type="number" step="0.01" name="uptime_hours" value="{{ record.uptime_hours|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="normal" {% if record.status == 'normal' %}selected{% endif %}>Normal</option>
+          <option value="low" {% if record.status == 'low' %}selected{% endif %}>Low</option>
+          <option value="shutdown" {% if record.status == 'shutdown' %}selected{% endif %}>Shutdown</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea name="notes">{{ record.notes|default:'' }}</textarea>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} Production</button>
+      <a href="/productions/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
